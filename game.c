@@ -52,7 +52,7 @@ char *generateLoadingScreenFrame(int p, struct winsize size, char *screen){
 }
 void loadingscreen(struct winsize size,char *screen){
     int p=0;
-    for(int i=0;i<100;i++){
+    for(int i=0;i<20;i++){
       screen=generateLoadingScreenFrame(p,size,screen);
       printf("\n%s",screen);
       fflush(stdout);
