@@ -123,7 +123,7 @@ int main() {
     if (user_move=='w'){
       printf("Moving Upwards\n");
       if (current_room->toproom==NULL){
-        current_room->toproom=find_room_connection(room_list, 2, (current_room->roomnumber+2)/2);
+        current_room->toproom=find_room_connection(room_list, 2, rand()%room_counter);
         if (current_room->toproom->roomnumber==0){
           current_room->toproom->roomnumber=room_counter;
           room_counter++;
@@ -140,7 +140,7 @@ int main() {
     } else if (user_move=='s'){
       printf("Moving Downwards\n");
       if (current_room->bottomroom==NULL){
-        current_room->bottomroom=find_room_connection(room_list, 0, (current_room->roomnumber)/2);
+        current_room->bottomroom=find_room_connection(room_list, 0, rand()%room_counter);
         if (current_room->bottomroom->roomnumber==0){
           current_room->bottomroom->roomnumber=room_counter;
           room_counter++;
@@ -156,7 +156,7 @@ int main() {
     } else if (user_move=='a'){
       printf("Moving Left\n");
       if (current_room->leftroom==NULL){
-        current_room->leftroom=find_room_connection(room_list, 3,(current_room->roomnumber+3)/2);
+        current_room->leftroom=find_room_connection(room_list, 3,rand()%room_counter);
         if (current_room->leftroom->roomnumber==0){
           current_room->leftroom->roomnumber=room_counter;
           room_counter++;
@@ -172,7 +172,7 @@ int main() {
     } else if (user_move=='d'){
       printf("Moving Right\n");
       if (current_room->rightroom==NULL){
-        current_room->rightroom=find_room_connection(room_list, 1,(current_room->roomnumber+1)/2);
+        current_room->rightroom=find_room_connection(room_list, 1,rand()%room_counter);
         if (current_room->rightroom->roomnumber==0){
           current_room->rightroom->roomnumber=room_counter;
           room_counter++;
