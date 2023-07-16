@@ -68,18 +68,26 @@ void loadingscreen(struct winsize size,char *screen){
     }
 };
 
-struct Room *find_room_connection(struct Node *room_list, int direction){ 
+void print_room(struct Room *room){
+  printf("Room: %d\n",room->roomnumber);
+  if (room->toproom!=NULL){printf(" ^:%d\n",room->toproom->roomnumber);};
+  if (room->rightroom!=NULL){printf(" >:%d\n",room->rightroom->roomnumber);};
+  if (room->bottomroom!=NULL){printf(" V:%d\n",room->bottomroom->roomnumber);};
+  if (room->leftroom!=NULL){printf(" <:%d\n",room->leftroom->roomnumber);};
+}
+
+struct Room *find_room_connection(struct Node *room_list, int direction, int rand_number){ 
   //direction: 0-up 1-right 2-bottom 3-left
   struct Node *current_node = room_list;
-  while (current_node->next!=NULL){
-    if (direction==0 && current_node->room->toproom==NULL){
-      return current_node->room;
-    } else if (direction==1 && current_node->room->rightroom==NULL){
-      return current_node->room;
-    } else if (direction==2 && current_node->room->bottomroom==NULL){
-      return current_node->room;
-    } else if (direction==3 && current_node->room->leftroom==NULL){
-      return current_node->room;
+  while (current_node->next!=NULL && rand_number>0){
+    if ((direction==0 && current_node->room->toproom==NULL) || 
+        (direction==1 && current_node->room->rightroom==NULL) ||
+        (direction==2 && current_node->room->bottomroom==NULL) ||
+        (direction==3 && current_node->room->leftroom==NULL)){
+      rand_number-=1;
+      if (rand_number==0){
+        return current_node->room;
+      }
     }
     current_node=current_node->next;
   }
@@ -109,13 +117,13 @@ int main() {
   //Movement
   while (1){
     printf("Current Room Number: %d\n",current_room->roomnumber);
-    printf("Move (wasd):");
+    printf("Move (wasd pq):");
     user_move=getchar();
     fflush(stdin);
     if (user_move=='w'){
       printf("Moving Upwards\n");
       if (current_room->toproom==NULL){
-        current_room->toproom=find_room_connection(room_list, 2);
+        current_room->toproom=find_room_connection(room_list, 2, (current_room->roomnumber+2)/2);
         if (current_room->toproom->roomnumber==0){
           current_room->toproom->roomnumber=room_counter;
           room_counter++;
@@ -132,7 +140,7 @@ int main() {
     } else if (user_move=='s'){
       printf("Moving Downwards\n");
       if (current_room->bottomroom==NULL){
-        current_room->bottomroom=find_room_connection(room_list, 0);
+        current_room->bottomroom=find_room_connection(room_list, 0, (current_room->roomnumber)/2);
         if (current_room->bottomroom->roomnumber==0){
           current_room->bottomroom->roomnumber=room_counter;
           room_counter++;
@@ -148,7 +156,7 @@ int main() {
     } else if (user_move=='a'){
       printf("Moving Left\n");
       if (current_room->leftroom==NULL){
-        current_room->leftroom=find_room_connection(room_list, 3);
+        current_room->leftroom=find_room_connection(room_list, 3,(current_room->roomnumber+3)/2);
         if (current_room->leftroom->roomnumber==0){
           current_room->leftroom->roomnumber=room_counter;
           room_counter++;
@@ -164,7 +172,7 @@ int main() {
     } else if (user_move=='d'){
       printf("Moving Right\n");
       if (current_room->rightroom==NULL){
-        current_room->rightroom=find_room_connection(room_list, 1);
+        current_room->rightroom=find_room_connection(room_list, 1,(current_room->roomnumber+1)/2);
         if (current_room->rightroom->roomnumber==0){
           current_room->rightroom->roomnumber=room_counter;
           room_counter++;
@@ -180,18 +188,10 @@ int main() {
     } else if (user_move=='p'){
       struct Node *current_node = room_list;
       while (current_node->next!=NULL){
-        printf("Room: %d\n",current_node->room->roomnumber);
-        if (current_node->room->toproom!=NULL){printf(" ^:%d\n",current_node->room->toproom->roomnumber);};
-        if (current_node->room->rightroom!=NULL){printf(" >:%d\n",current_node->room->rightroom->roomnumber);};
-        if (current_node->room->bottomroom!=NULL){printf(" V:%d\n",current_node->room->bottomroom->roomnumber);};
-        if (current_node->room->leftroom!=NULL){printf(" <:%d\n",current_node->room->leftroom->roomnumber);};
+        print_room(current_node->room);
         current_node=current_node->next;
       }
-      printf("Room: %d\n",current_node->room->roomnumber);
-      if (current_node->room->toproom!=NULL){printf(" ^:%d\n",current_node->room->toproom->roomnumber);};
-      if (current_node->room->rightroom!=NULL){printf(" >:%d\n",current_node->room->rightroom->roomnumber);};
-      if (current_node->room->bottomroom!=NULL){printf(" V:%d\n",current_node->room->bottomroom->roomnumber);};
-      if (current_node->room->leftroom!=NULL){printf(" <:%d\n",current_node->room->leftroom->roomnumber);};
+      print_room(current_node->room);
     } else if (user_move=='q'){
       return 0;
     }
