@@ -76,6 +76,58 @@ void print_room(struct Room *room){
   if (room->leftroom!=NULL){printf(" <:%d\n",room->leftroom->roomnumber);};
 }
 
+void display_room(struct winsize size, struct Room *room){
+  char screen[size.ws_row][size.ws_col+1];
+  for (int row=0;row<size.ws_row;row++){
+    int col=0;
+    for (col=0;col<size.ws_col;col++){
+      screen[row][col]=' ';
+    }
+    screen[row][col+1]='\0';
+  }
+  //top
+  if (room->toproom!=NULL){
+    char room_string[3]="   ";
+    sprintf(room_string, "%d", room->toproom->roomnumber);
+    screen[0][size.ws_col/2-1]=room_string[0];
+    screen[0][size.ws_col/2  ]=room_string[1];
+    screen[0][size.ws_col/2+1]=room_string[2];
+  }
+  //bottom
+  if (room->bottomroom!=NULL){
+    char room_string[3]="   ";
+    sprintf(room_string, "%d", room->bottomroom->roomnumber);
+    screen[size.ws_row-1][size.ws_col/2-1]=room_string[0];
+    screen[size.ws_row-1][size.ws_col/2  ]=room_string[1];
+    screen[size.ws_row-1][size.ws_col/2+1]=room_string[2];
+  }
+  //left
+  if (room->leftroom!=NULL){
+    char room_string[3]="   ";
+    sprintf(room_string, "%d", room->leftroom->roomnumber);
+    screen[size.ws_row/2-1][0]=room_string[0];
+    screen[size.ws_row/2  ][0]=room_string[1];
+    screen[size.ws_row/2+1][0]=room_string[2];
+  }
+  //right
+  if (room->rightroom!=NULL){
+    char room_string[3]="   ";
+    sprintf(room_string, "%d", room->rightroom->roomnumber);
+    screen[size.ws_row/2-1][size.ws_col-1]=room_string[0];
+    screen[size.ws_row/2  ][size.ws_col-1]=room_string[1];
+    screen[size.ws_row/2+1][size.ws_col-1]=room_string[2];
+  }
+  //print
+  system("clear");
+  for (int row=0;row<size.ws_row;row++){
+    int col=0;
+    printf("\n");
+    for (col=0;col<size.ws_col;col++){
+      printf("%c",screen[row][col]);
+    }
+  }
+}
+
 struct Room *find_room_connection(struct Node *room_list, int direction, int rand_number){ 
   //direction: 0-up 1-right 2-bottom 3-left
   struct Node *current_node = room_list;
@@ -116,8 +168,9 @@ int main() {
   char user_move;
   //Movement
   while (1){
-    printf("Current Room Number: %d\n",current_room->roomnumber);
-    printf("Move (wasd pq):");
+    // printf("Current Room Number: %d\n",current_room->roomnumber);
+    display_room(size, current_room);
+    // printf("Move (wasd pq):");
     user_move=getchar();
     fflush(stdin);
     if (user_move=='w'){
